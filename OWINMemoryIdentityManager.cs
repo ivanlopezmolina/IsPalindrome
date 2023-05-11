@@ -156,3 +156,92 @@ public class ApplicationUserManager : UserManager<ApplicationUser>
         return manager;
     }
 }
+
+
+
+public class InMemoryUserStore : IUserStore<ApplicationUser>, IUserPasswordStore<ApplicationUser>, IUserClaimStore<ApplicationUser>
+{
+    private readonly IDictionary<string, ApplicationUser> _users = new Dictionary<string, ApplicationUser>();
+
+    public Task CreateAsync(ApplicationUser user)
+    {
+        _users[user.Id] = user;
+        return Task.FromResult<object>(null);
+    }
+
+    public Task DeleteAsync(ApplicationUser user)
+    {
+        _users.Remove(user.Id);
+        return Task.FromResult<object>(null);
+    }
+
+    public Task<ApplicationUser> FindByIdAsync(string userId)
+    {
+        ApplicationUser user;
+        _users.TryGetValue(userId, out user);
+        return Task.FromResult(user);
+    }
+
+    public Task<ApplicationUser> FindByNameAsync(string userName)
+    {
+        ApplicationUser user = _users.Values.FirstOrDefault(u => u.UserName == userName);
+        return Task.FromResult(user);
+    }
+
+    public Task UpdateAsync(ApplicationUser user)
+    {
+        _users[user.Id] = user;
+        return Task.FromResult<object>(null);
+    }
+
+    public Task SetPasswordHashAsync(ApplicationUser user, string passwordHash)
+    {
+        user.PasswordHash = passwordHash;
+        return Task.FromResult<object>(null);
+    }
+
+    public Task<string> GetPasswordHashAsync(ApplicationUser user)
+    {
+        return Task.FromResult(user.PasswordHash);
+    }
+
+    public Task<bool> HasPasswordAsync(ApplicationUser user)
+    {
+        return Task.FromResult(!string.IsNullOrEmpty(user.PasswordHash));
+    }
+
+    public Task<IList<Claim>> GetClaimsAsync(ApplicationUser user)
+    {
+        return Task.FromResult((IList<Claim>)user.Claims);
+    }
+
+    public Task AddClaimsAsync(ApplicationUser user, IEnumerable<Claim> claims)
+    {
+        foreach (var claim in claims)
+        {
+            user.Claims.Add(claim);
+        }
+
+        return Task.FromResult<object>(null);
+    }
+
+    public Task ReplaceClaimAsync(ApplicationUser user, Claim claim, Claim newClaim)
+    {
+        user.Claims.Remove(claim);
+        user.Claims.Add(newClaim);
+
+        return Task.FromResult<object>(null);
+    }
+
+    public Task RemoveClaimAsync(ApplicationUser user, Claim claim)
+    {
+        user.Claims.Remove(claim);
+
+        return Task.FromResult<object>(null);
+    }
+
+    public void Dispose()
+    {
+        // No need to dispose anything in this implementation
+    }
+}
