@@ -1,5 +1,5 @@
 create a  SPA web application .net framework 4.7 with JWT and WebApi methods and an Angular app to test the web api methods
-ChatGPT
+
 Sure! I can help you with that. Here's a step-by-step guide to creating a single-page web application using .NET Framework 4.7 with JWT authentication and WebAPI methods, and an Angular app to test the WebAPI methods.
 
 Step 1: Set up the .NET WebAPI project
