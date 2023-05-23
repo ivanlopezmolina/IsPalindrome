@@ -163,3 +163,35 @@ public IHttpActionResult GetToken()
     return Ok(token);
 }
 // Now, when you decode and validate the token in your API endpoints, you can access the user name and email claims from the ClaimsPrincipal object.
+
+
+
+// To retrieve the user name and other values from the JWT token sent by the client app in your API endpoint, you can access the claims stored in the ClaimsPrincipal object. Here's an example of how you can do it:
+
+
+[HttpGet]
+[Route("api/values")]
+[Authorize]
+public IHttpActionResult GetValues()
+{
+    // Retrieve the current user's ClaimsPrincipal
+    var user = User as ClaimsPrincipal;
+
+    // Retrieve the user name claim
+    var userName = user.Identity.Name;
+
+    // Retrieve the email claim
+    var emailClaim = user.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email);
+    var email = emailClaim?.Value;
+
+    // Retrieve and return the stored values
+    string storedValues = "Your stored values";
+
+    // You can also use the userName and email in your logic
+    // For example, you could fetch user-specific data from a database
+
+    return Ok(new { UserName = userName, Email = email, Values = storedValues });
+}
+// In this example, the User property of the API controller is cast to a ClaimsPrincipal object. You can then access the user name and email claims using the Name property of the Identity object and the Value property of the corresponding Claim object, respectively.
+
+// You can include additional logic and retrieve any other custom claims or values from the token based on your requirements.
