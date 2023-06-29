@@ -1,3 +1,8 @@
+// Renew the session
+Session.Abandon();
+Session.Clear();
+Session.RemoveAll();
+
 // Store the current session ID
 string sessionId = Session.SessionID;
 
