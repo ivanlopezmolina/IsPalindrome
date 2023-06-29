@@ -16,14 +16,21 @@ HttpContext.Current.SessionID = sessionId;
 
 //------>>>>
 
-// Create a new session ID
-string newSessionId = SessionIDManager.NewSessionID();
+using System.Web;
+using System.Web.Mvc;
+using System.Web.SessionState;
 
-// Remove the current session
-bool isRedirected = false;
-bool isAdded = false;
+
+// Generate a new session ID
+string newSessionId = SessionIDManager.CreateSessionID(System.Web.HttpContext.Current);
+
+// Invalidate the current session
+Session.Clear();
+Session.Abandon();
+
+// Set the new session ID
 SessionIDManager manager = new SessionIDManager();
-manager.RemoveSessionID(HttpContext.Current);
-manager.SaveSessionID(HttpContext.Current, newSessionId, out isRedirected, out isAdded);
-
+bool redirected;
+bool isAdded;
+manager.SaveSessionID(System.Web.HttpContext.Current, newSessionId, out redirected, out isAdded);
 
