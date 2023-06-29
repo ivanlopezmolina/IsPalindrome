@@ -34,3 +34,29 @@ bool redirected;
 bool isAdded;
 manager.SaveSessionID(System.Web.HttpContext.Current, newSessionId, out redirected, out isAdded);
 
+//-----> 2
+
+// Generate a new session ID
+string newSessionId = SessionIDManager.CreateSessionID(Context);
+
+// Save the current session state
+SessionStateItemCollection sessionItems = new SessionStateItemCollection();
+foreach (string key in Session.Keys)
+{
+    sessionItems[key] = Session[key];
+}
+
+// Abandon the current session
+Session.Abandon();
+
+// Assign the new session ID
+SessionIDManager manager = new SessionIDManager();
+bool redirected = false;
+string newUrl = manager.GetSessionID(Context, newSessionId, out redirected);
+SessionIDManager.SaveSessionID(Context, newSessionId, out redirected);
+
+// Restore the session state
+SessionStateUtility.LoadSessionStateFromItemCollection(Context, sessionItems);
+
+// Renew the session data
+// ...
