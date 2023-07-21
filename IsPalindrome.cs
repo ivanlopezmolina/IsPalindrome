@@ -327,3 +327,25 @@ namespace TimerApp
     }
 }
 
+
+//read file fresh
+
+using System.IO;
+
+string filePath = "path_to_your_file";
+string fileContent;
+
+// Read the file with SequentialScan option to force reading a fresh copy
+using (FileStream fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read, bufferSize: 4096, FileOptions.SequentialScan))
+{
+    using (StreamReader streamReader = new StreamReader(fileStream))
+    {
+        fileContent = streamReader.ReadToEnd();
+    }
+}
+
+
+//conver string to datetime
+string dateTimeString = "2023-07-21 12:34:56";
+DateTime dateTime = DateTime.Parse(dateTimeString);
+
