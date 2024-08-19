@@ -1,0 +1,37 @@
+using System;
+using System.Runtime.InteropServices;
+using System.Timers;
+
+class Program
+{
+    // Import the user32.dll to use the mouse_event function
+    [DllImport("user32.dll", SetLastError = true)]
+    private static extern void mouse_event(uint dwFlags, uint dx, uint dy, uint dwData, int dwExtraInfo);
+
+    // Constants for mouse events
+    private const uint MOUSEEVENTF_LEFTDOWN = 0x0002;
+    private const uint MOUSEEVENTF_LEFTUP = 0x0004;
+
+    private static Timer timer;
+
+    static void Main()
+    {
+        // Set up the timer to trigger every 2 minutes (120,000 milliseconds)
+        timer = new Timer(120000);
+        timer.Elapsed += OnTimedEvent;
+        timer.AutoReset = true; // Repeat the event every interval
+        timer.Enabled = true;
+
+        // Keep the application running to allow the timer to trigger
+        Console.WriteLine("Press 'q' to quit the application...");
+        while (Console.Read() != 'q') ;
+    }
+
+    private static void OnTimedEvent(Object source, ElapsedEventArgs e)
+    {
+        // Simulate a mouse click
+        mouse_event(MOUSEEVENTF_LEFTDOWN, 0, 0, 0, 0);
+        mouse_event(MOUSEEVENTF_LEFTUP, 0, 0, 0, 0);
+        Console.WriteLine("Mouse click performed at " + e.SignalTime);
+    }
+}
