@@ -72,3 +72,31 @@ Copy code
 Jan 2, 2025, 2:00:00 PM
 Jan 3, 2025, 8:30:00 PM
 Jan 4, 2025, 12:45:00 PM
+
+
+To create an Angular pipe that converts any given date to a UTC string format similar to '2025-01-02T14:00:00Z' and then returns the local browser time, you can follow these steps:
+
+
+import { Pipe, PipeTransform } from '@angular/core';
+
+@Pipe({
+  name: 'utcToLocalTime',
+})
+export class UtcToLocalTimePipe implements PipeTransform {
+  transform(value: any): string | null {
+    if (!value) return null;
+
+    // Convert input to a Date object
+    const date = new Date(value);
+    
+    // Convert to UTC string format 'yyyy-MM-ddTHH:mm:ssZ'
+    const utcDate = date.toISOString(); // This will give us the UTC date in the desired format
+
+    // Convert UTC date to local time
+    const localDate = new Date(utcDate); // This ensures we convert the UTC to local browser time
+
+    // Return the local date in a human-readable format
+    return localDate.toLocaleString(); // Converts to the local time based on browser's locale
+  }
+}
+
